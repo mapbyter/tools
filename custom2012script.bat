@@ -46,6 +46,9 @@ netsh advfirewall set allprofiles logging allowedconnections enable
 netsh advfirewall set global statefulftp disable
 netsh advfirewall set global statefulpptp disable
 
+:: Disable all rules
+netsh advfirewall firewall set rule name=all new enable=no
+
 ::Outbound rules
 netsh advfirewall firewall add rule name="Allow Pings out" dir=out action=allow enable=yes protocol=icmpv4:8,any
 netsh advfirewall firewall add rule name="Splunk OUT" dir=out action=allow enable=yes profile=any remoteip=%Splunk% remoteport=8000,8089,9997 protocol=tcp
