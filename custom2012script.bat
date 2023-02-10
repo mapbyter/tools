@@ -74,10 +74,10 @@ netsh advfirewall firewall add rule name="SAM/LSA TCP In" dir=in action=allow pr
 netsh advfirewall firewall add rule name="SAM/LSA UDP In" dir=in action=allow program="System" enable=yes profile=any localport=445 protocol=udp
 netsh advfirewall firewall add rule name="Secure LDAP IN" dir=in action=allow program="C:\Windows\System32\lsass.exe" enable=yes profile=any localport=636 protocol=tcp
 netsh advfirewall firewall add rule name="Secure LDAP Global Catalog IN" dir=in action=allow program="C:\Windows\System32\lsass.exe" enable=yes profile=any localport=3269 protocol=tcp
-netsh advfirewall firewall add rule name="RPC IN" dir=in action=allow program="C:\Windows\System32\lsass.exe" enable=yes profile=any localport="RPC Dynamic Ports" protocol=tcp
-netsh advfirewall firewall add rule name="RPC-EPMAP IN" dir=in action=allow program="C:\Windows\System32\svhost.exe" enable=yes profile=any localport="RPC Endpoint Manager" protocol=tcp
+netsh advfirewall firewall add rule name="RPC IN" dir=in action=allow program="C:\Windows\System32\lsass.exe" enable=yes profile=any localport=RPC protocol=tcp
+netsh advfirewall firewall add rule name="RPC-EPMAP IN" dir=in action=allow program="C:\Windows\System32\svhost.exe" enable=yes profile=any localport=RPC-EPMap protocol=tcp
 netsh advfirewall firewall add rule name="DHCP UDP IN" dir=in action=allow program="C:\Windows\System32\svhost.exe" enable=yes profile=any localport=67,68 protocol=udp
-netsh advfirewall firewall add rule name="RPC for DNS IN" dir=in action=allow program="C:\Windows\System32\dns.exe" enable=yes profile=any localport="RPC Dynamic Ports" protocol=tcp
+netsh advfirewall firewall add rule name="RPC for DNS IN" dir=in action=allow program="C:\Windows\System32\dns.exe" enable=yes profile=any localport=RPC protocol=tcp
 
 :: Diable IPv6 Teredo tunneling
 netsh interface teredo set state disabled
