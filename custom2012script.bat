@@ -46,9 +46,6 @@ netsh advfirewall set allprofiles logging allowedconnections enable
 netsh advfirewall set global statefulftp disable
 netsh advfirewall set global statefulpptp disable
 
-:: Disable all rules
-netsh advfirewall firewall set rule name=all new enable=no
-
 ::Outbound rules
 netsh advfirewall firewall add rule name="Allow Pings out" dir=out action=allow enable=yes protocol=icmpv4:8,any
 netsh advfirewall firewall add rule name="Splunk OUT" dir=out action=allow enable=yes profile=any remoteip=%Splunk% remoteport=8000,8089,9997 protocol=tcp
@@ -196,11 +193,11 @@ DISM /online /disable-feature /featurename:"AS-WS-Atomic" /NoRestart
 ::Backup registry before making modifications
 mkdir "c:\ccdc\regbackup"
 set regbakpath="c:\ccdc\regbackup"
-reg export HKCR %regbakpath% /y
-reg export HKCU %regbakpath% /y
-reg export HKLM %regbakpath% /y
-reg export HKU %regbakpath% /y
-reg export HKCC %regbakpath% /y
+reg export HKCR %regbakpath%\HKCR.reg /y
+reg export HKCU %regbakpath%\HKCU.reg /y
+reg export HKLM %regbakpath%\HKLM.reg /y
+reg export HKU %regbakpath%\HKU.reg /y
+reg export HKCC %regbakpath%\HKCC.reg /y
 
 echo Editing Registry...
 echo. > %ccdcpath%\Proof\regproof.txt
@@ -320,3 +317,22 @@ net start w32time
 :: Disable remote Powershell
 :: PS> Disable-PSRemoting -Force
 powershell -Command "Disable-PSRemoting -Force"
+
+
+:: RegEdit <action> <registry> /v <entry> /t <type> /d <value>
+:: %~0     %~1      %~2       %~3 %~4    %~5 %~6   %~7 %~8
+:RegEdit
+if %~3 NEQ /v ( EXIT /B 1 )
+
+ECHO %~2
+REG query %2 /v %4 >> %ccdcpath%\Proof\regproof.txt
+if "%~1" == "add" (
+  if "%5" NEQ "/t" ( EXIT /B 1 )
+  if "%7" NEQ "/d" ( EXIT /B 1 )
+  REG add %2 /v %4 /t %6 /d %8 /f
+) else if "%~1" == "delete" (
+  REG delete %2 /v %4 /f
+)
+REG query %2 /v %4 >> %ccdcpath%\Proof\regproof.txt
+
+EXIT /B 0
