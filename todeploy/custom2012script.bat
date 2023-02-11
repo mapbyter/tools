@@ -19,7 +19,7 @@ set  Splunk=172.20.241.20
 set  ADDNS=172.20.242.200
 set  PAMI=172.20.242.150
 set  2016Docker=172.20.240.10
-set  UbuntuWeb=172.20.240.20
+set  UbuntuWeb=172.20.242.10
 set  UbuntuWkst=172.20.242.100
 set  Internal=%Ecomm%,%DNSNTP%,%WebMail%,%Splunk%,%ADDNS%,%UbuntuWkst%,%PAMI%,%2016Docker%,%UbuntuWeb%
 Echo E-Commerce Ip is now %EComm%
@@ -89,6 +89,7 @@ ECHO "Disabling Guest..."
 net user Guest /active:no
 
 ::Backup GPOs
+mkdir c:\ccdc\gpobackup\
 powershell -Command "Backup-Gpo -All -Path c:\ccdc\gpobackup"
 auditpol /backup /file:C:\ccdc\aduitbackup\auditpolicy.csv
 ::Import Group Policy
