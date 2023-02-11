@@ -88,6 +88,9 @@ netsh interface ipv6 isatap set state state=disabled
 ECHO "Disabling Guest..."
 net user Guest /active:no
 
+::Backup GPOs
+powershell -Command "Backup-Gpo -All -Path c:\ccdc\gpobackup"
+auditpol /backup /file:C:\ccdc\aduitbackup\auditpolicy.csv
 ::Import Group Policy
 ECHO "Importing Group Policy..."
 powershell -Command "Import-GPO -BackupGPOName 'Audit Policy' -TargetName AuditPolicy -path .\gpo -CreateIfNeeded"
@@ -174,8 +177,7 @@ DISM /online /disable-feature /featurename:"Remote-Desktop-Services" /NoRestart
 
 :: Disable SMB1
 powershell -Command "Set-SmbServerConfiguration -EnableSMB1Protocol $false -Force"
-::Enable SMB2 for GPM
-powershell -Command "Set-SmbServerConfiguration -EnableSMB2Protocol $true -Force"
+
 DISM /online /disable-feature /featurename:"SmbDirect" /NoRestart
 DISM /online /disable-feature /featurename:"SMB1Protocol" /NoRestart
 DISM /online /disable-feature /featurename:"SMBBW" /NoRestart
@@ -183,6 +185,9 @@ DISM /online /disable-feature /featurename:"SmbWitness" /NoRestart
 DISM /online /disable-feature /featurename:"SMBHashGeneration" /NoRestart
 
 DISM /online /disable-feature /featurename:"SNMP" /NoRestart
+
+::Enable SMB2 for GPM
+powershell -Command "Set-SmbServerConfiguration -EnableSMB2Protocol $true -Force"
 
 :: Application server is for running custom business logic. I believe the only scored service is
 :: DNS, so this shouldn't be required
@@ -200,6 +205,7 @@ DISM /online /disable-feature /featurename:"AS-Dist-Transaction" /NoRestart
 DISM /online /disable-feature /featurename:"AS-Incoming-Trans" /NoRestart
 DISM /online /disable-feature /featurename:"AS-Outgoing-Trans" /NoRestart
 DISM /online /disable-feature /featurename:"AS-WS-Atomic" /NoRestart
+
 
 
 ::Backup registry before making modifications
