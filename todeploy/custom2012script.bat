@@ -46,6 +46,9 @@ netsh advfirewall set allprofiles logging allowedconnections enable
 netsh advfirewall set global statefulftp disable
 netsh advfirewall set global statefulpptp disable
 
+::Disable existing rules
+netsh advfirewall set rule all new enable=no
+
 ::Outbound rules
 netsh advfirewall firewall add rule name="Allow Pings out" dir=out action=allow enable=yes protocol=icmpv4:8,any
 netsh advfirewall firewall add rule name="Splunk OUT" dir=out action=allow enable=yes profile=any remoteip=%Splunk% remoteport=8000,8089,9997 protocol=tcp
@@ -90,6 +93,8 @@ ECHO "Importing Group Policy..."
 powershell -Command "Import-GPO -BackupGPOName 'Audit Policy' -TargetName AuditPolicy -path .\gpo -CreateIfNeeded"
 powershell -Command "Import-GPO -BackupGPOName 'Password Policy' -TargetName PasswordPolicy -path .\gpo -CreateIfNeeded"
 powershell -Command "Import-GPO -BackupGPOName 'Access Control' -TargetName AccessControl -path .\gpo -CreateIfNeeded"
+powershell -Command "Import-GPO -BackupGPOName 'App Locker' -TargetName AppLocker -path .\gpo -CreateIfNeeded"
+
 
 
 :: Disable features
@@ -169,7 +174,8 @@ DISM /online /disable-feature /featurename:"Remote-Desktop-Services" /NoRestart
 
 :: Disable SMB1
 powershell -Command "Set-SmbServerConfiguration -EnableSMB1Protocol $false -Force"
-::powershell -Command "Set-SmbServerConfiguration -EnableSMB2Protocol $false -Force"
+::Enable SMB2 for GPM
+powershell -Command "Set-SmbServerConfiguration -EnableSMB2Protocol $true -Force"
 DISM /online /disable-feature /featurename:"SmbDirect" /NoRestart
 DISM /online /disable-feature /featurename:"SMB1Protocol" /NoRestart
 DISM /online /disable-feature /featurename:"SMBBW" /NoRestart
@@ -325,6 +331,7 @@ net start w32time
 powershell -Command "Disable-PSRemoting -Force"
 
 cmd /k
+
 
 :: RegEdit <action> <registry> /v <entry> /t <type> /d <value>
 :: %~0     %~1      %~2       %~3 %~4    %~5 %~6   %~7 %~8
