@@ -88,8 +88,8 @@ net user Guest /active:no
 ::Import Group Policy
 ECHO "Importing Group Policy..."
 powershell -Command "Import-GPO -BackupGPOName 'Audit Policy' -TargetName AuditPolicy -path .\gpo -CreateIfNeeded"
-powershell -Command "Import-GPO -BackupGPOName 'Password Policy' -TargetName AuditPolicy -path .\gpo -CreateIfNeeded"
-powershell -Command "Import-GPO -BackupGPOName 'Access Control' -TargetName AuditPolicy -path .\gpo -CreateIfNeeded"
+powershell -Command "Import-GPO -BackupGPOName 'Password Policy' -TargetName PasswordPolicy -path .\gpo -CreateIfNeeded"
+powershell -Command "Import-GPO -BackupGPOName 'Access Control' -TargetName AccessControl -path .\gpo -CreateIfNeeded"
 
 
 :: Disable features
