@@ -324,7 +324,7 @@ net start w32time
 :: PS> Disable-PSRemoting -Force
 powershell -Command "Disable-PSRemoting -Force"
 
-
+cmd /k
 
 :: RegEdit <action> <registry> /v <entry> /t <type> /d <value>
 :: %~0     %~1      %~2       %~3 %~4    %~5 %~6   %~7 %~8
